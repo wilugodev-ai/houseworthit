@@ -41,13 +41,7 @@ export default function MarketSnapshot({ onUseRate }: { onUseRate: (rate: number
   }, [load]);
 
   return (
-    <section className="market-snapshot" aria-labelledby="market-title">
-      <div className="market-intro">
-        <span className="eyebrow">A LITTLE MARKET CONTEXT</span>
-        <h3 id="market-title">Rates to keep in view.</h3>
-        <p>Latest published U.S. benchmarks.<br/>Not real-time quotes or loan offers.</p>
-        <button className="text-button" disabled={loading} onClick={() => void load()}>{loading ? 'Checking sources…' : 'Reload snapshot ↻'}</button>
-      </div>
+    <section className="market-snapshot" aria-label="Mortgage and Treasury benchmarks">
       {series.map(item => (
         <article className="market-series" key={item.id}>
           <h4>{item.name}</h4>
@@ -58,11 +52,15 @@ export default function MarketSnapshot({ onUseRate }: { onUseRate: (rate: number
           {item.id === 'MORTGAGE30US' && item.observation && !loading && !item.stale && <button className="market-use-rate" onClick={() => onUseRate(item.observation!.value)}>Use this rate in calculator ↗</button>}
         </article>
       ))}
-      <div className="market-explainer">
+      <div className="market-footer">
+        <details className="market-explainer">
+        <summary>About these benchmarks · Not loan offers</summary>
         <p><strong>Interest rate vs. APR:</strong> This mortgage benchmark is an average interest rate. APR also includes points and certain loan fees. Your actual rate and APR depend on your loan and lender. <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-mortgage-interest-rate-and-an-apr-en-135/" target="_blank" rel="noreferrer">Learn the difference ↗</a></p>
         <p>The Treasury figure is the 10-year constant-maturity yield, not a bond price or a mortgage rate. The series have different publication schedules. Mortgage data © Freddie Mac, provided as is via FRED.</p>
-        <span className="market-status" role="status">{error || (!loading && series.some(item => !item.observation) ? 'Some published data could not be retrieved. Available observations are shown with their dates.' : '')}</span>
+        </details>
+        <button className="text-button" disabled={loading} onClick={() => void load()}>{loading ? 'Checking sources…' : 'Reload snapshot ↻'}</button>
       </div>
+      <span className="market-status" role="status">{error || (!loading && series.some(item => !item.observation) ? 'Some published data could not be retrieved. Available observations are shown with their dates.' : '')}</span>
     </section>
   );
 }
