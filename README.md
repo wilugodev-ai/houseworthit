@@ -2,7 +2,7 @@
 
 A home-buying readiness website, rebuilt around household income, debt, savings, and the full cost of ownership. Includes a responsive calculator, local scenario comparison, personal accounts, saved financial profiles, and private document uploads.
 
-Live Google website: **https://houseworthit-3ps6xhuf7a-uc.a.run.app**. Hosting uses Cloud Run with Neon PostgreSQL and private encrypted Google Cloud Storage. The Hostinger custom domain is pending ownership verification and DNS connection. See [deployment details](docs/deployment-google-cloud.md) and [Hostinger domain setup](docs/domain-hostinger.md).
+Live Google website: **https://houseworthit-3ps6xhuf7a-uc.a.run.app**. Hosting uses Cloud Run with Neon PostgreSQL and private encrypted Google Cloud Storage. The Hostinger domain is verified and mapped; DNS connection and HTTPS certificate provisioning remain pending. See [deployment details](docs/deployment-google-cloud.md) and [Hostinger domain setup](docs/domain-hostinger.md).
 
 ## Stack
 

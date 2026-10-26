@@ -2,16 +2,32 @@
 
 The Google website is already live at https://houseworthit-3ps6xhuf7a-uc.a.run.app.
 
-As of October 26, 2026, Google does not yet list `houseworthit.com` as verified for the deployment account. No Cloud Run custom-domain mapping exists. The Site Verification API returned HTTP 403 for the current command-line credential, so an ownership token could not be retrieved through that credential. Browser control stopped because it could not verify the current browser URL; no Hostinger DNS edits were made.
+Google ownership was verified on October 26, 2026. Both `houseworthit.com` and `www.houseworthit.com` now map to the `houseworthit` Cloud Run service. Google returned the DNS records below. Certificates are pending DNS configuration. Hostinger edits are being performed by the domain owner.
 
-## Complete ownership verification
+## Google-issued DNS records
+
+In Hostinger, replace the old root website A/AAAA records and the `www` CNAME with these records. Use TTL 300. Keep the Google verification TXT, mail records, unrelated records, and existing nameservers.
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | @ | 216.239.32.21 |
+| A | @ | 216.239.34.21 |
+| A | @ | 216.239.36.21 |
+| A | @ | 216.239.38.21 |
+| AAAA | @ | 2001:4860:4802:32::15 |
+| AAAA | @ | 2001:4860:4802:34::15 |
+| AAAA | @ | 2001:4860:4802:36::15 |
+| AAAA | @ | 2001:4860:4802:38::15 |
+| CNAME | www | ghs.googlehosted.com |
+
+## Ownership verification reference (completed)
 
 1. Open [Google Search Console](https://search.google.com/search-console/welcome) with the Google account used for deployment.
 2. Add a **Domain** property for `houseworthit.com` and copy the Google-provided verification TXT value.
 3. In Hostinger, open this domain's **DNS / Nameservers** and add that TXT record at `@`. Keep the existing website records during verification.
 4. Return to Google Search Console and verify ownership. Keep the verification TXT record afterward.
 
-## Map the website and obtain the exact Google records
+## Domain mapping reference (completed)
 
 In [Cloud Run domain mappings](https://console.cloud.google.com/run/domains?project=houseworthit-20261026), add `houseworthit.com` to service `houseworthit`, region `us-central1`. Add `www.houseworthit.com` as well if desired. Use the DNS records returned for those mappings; do not infer the records from another application's deployment.
 
