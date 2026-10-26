@@ -12,7 +12,7 @@ function observationDate(date: string) {
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
 }
 
-export default function MarketSnapshot({ onUseRate }: { onUseRate: (rate: number) => void }) {
+export default function MarketSnapshot() {
   const [series, setSeries] = useState<MarketSeries[]>(fallback);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -41,25 +41,24 @@ export default function MarketSnapshot({ onUseRate }: { onUseRate: (rate: number
   }, [load]);
 
   return (
-    <section className="market-snapshot" aria-label="Mortgage and Treasury benchmarks">
-      {series.map(item => (
-        <article className="market-series" key={item.id}>
-          <h4>{item.name}</h4>
-          <strong>{loading ? '—' : item.observation ? `${item.observation.value.toFixed(2)}%` : 'Unavailable'}</strong>
-          <span className="market-date">{!loading && item.observation ? <>As of <time dateTime={item.observation.date}>{observationDate(item.observation.date)}</time>{item.stale && ' · Older publication'}</> : loading ? 'Retrieving published observation' : 'No verified observation returned'}</span>
-          <a href={item.sourceUrl} target="_blank" rel="noreferrer">{item.source} ↗</a>
-          <small>{item.frequency} · Sources checked at most hourly</small>
-          {item.id === 'MORTGAGE30US' && item.observation && !loading && !item.stale && <button className="market-use-rate" onClick={() => onUseRate(item.observation!.value)}>Use this rate in calculator ↗</button>}
-        </article>
-      ))}
-      <div className="market-footer">
-        <details className="market-explainer">
-        <summary>About these benchmarks · Not loan offers</summary>
-        <p><strong>Interest rate vs. APR:</strong> This mortgage benchmark is an average interest rate. APR also includes points and certain loan fees. Your actual rate and APR depend on your loan and lender. <a href="https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-mortgage-interest-rate-and-an-apr-en-135/" target="_blank" rel="noreferrer">Learn the difference ↗</a></p>
-        <p>The Treasury figure is the 10-year constant-maturity yield, not a bond price or a mortgage rate. The series have different publication schedules. Mortgage data © Freddie Mac, provided as is via FRED.</p>
-        </details>
-        <button className="text-button" disabled={loading} onClick={() => void load()}>{loading ? 'Checking sources…' : 'Reload snapshot ↻'}</button>
-      </div>
+    <section className="market-snapshot" aria-label="Mortgage and Treasury benchmarks" aria-busy={loading}>
+      {series.map(item => {
+        const value = !loading && item.observation ? item.observation.value.toFixed(2) : null;
+        const publication = loading ? 'Checking published observation' : item.observation
+          ? `As of ${observationDate(item.observation.date)}${item.stale ? ' · Older publication' : ''}`
+          : 'Published observation unavailable';
+        const context = item.id === 'MORTGAGE30US'
+          ? 'Average interest rate, not APR. Mortgage data © Freddie Mac, provided as is via FRED.'
+          : '10-year constant-maturity yield, not a bond price.';
+        const description = `${item.name}: ${value ? `${value}%` : '—'}. ${publication}. ${item.source}. ${context} Published benchmark, not a real-time quote or loan offer.`;
+
+        return (
+          <a className="market-series" key={item.id} href={item.sourceUrl} target="_blank" rel="noreferrer" title={description} aria-label={`${description} Open source in a new tab.`}>
+            <span className="market-symbol">{item.id === 'MORTGAGE30US' ? 'Mortgage 30Y' : 'US Treasury 10Y'}</span>
+            <strong>{value || '—'}{value && <span className="market-percent">%</span>}</strong>
+          </a>
+        );
+      })}
       <span className="market-status" role="status">{error || (!loading && series.some(item => !item.observation) ? 'Some published data could not be retrieved. Available observations are shown with their dates.' : '')}</span>
     </section>
   );
