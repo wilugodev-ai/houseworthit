@@ -1,0 +1,141 @@
+:root {
+  color-scheme: light;
+}
+
+.appearance-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.appearance-select label {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.appearance-select select {
+  width: auto;
+  min-width: 83px;
+  min-height: 38px;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --ink: #e4ece3;
+  --muted: #aab9ad;
+  --paper: #141d18;
+  --line: #3c4d40;
+  --green: #b3d6a7;
+  --lime: #e5ecb4;
+  --chart-principal: #83b49a;
+  background: var(--paper);
+}
+
+html[data-theme='dark'] :is(.input-panel, .result-panel, .scenario-card, .auth-card, .account-card, .art-label, .skip) {
+  background: #1d2922;
+  border-color: var(--line);
+}
+
+html[data-theme='dark'] .calculator-section {
+  background: #18251d;
+}
+
+html[data-theme='dark'] :is(.unit-input, .plain-input, select) {
+  background: #152019;
+  border-color: #506250;
+  color: var(--ink);
+}
+
+html[data-theme='dark'] input {
+  color: var(--ink);
+}
+
+html[data-theme='dark'] input::placeholder {
+  color: var(--muted);
+}
+
+html[data-theme='dark'] :is(.range-labels, label > small, .device-note, .breakdown > div, .method p, .steps article > span) {
+  color: var(--muted);
+}
+
+html[data-theme='dark'] h1 em {
+  color: #b3c99c;
+}
+
+html[data-theme='dark'] .brand-dot {
+  color: #d5b78c;
+}
+
+html[data-theme='dark'] :is(.label-icon, .buying-power, .profile-summary, .message) {
+  background: #2c402a;
+  border-color: #506544;
+  color: var(--ink);
+}
+
+html[data-theme='dark'] .button {
+  background: #b3d6a7;
+  color: #183020;
+}
+
+html[data-theme='dark'] .button:hover {
+  background: #c7e5ba;
+}
+
+html[data-theme='dark'] .save-button {
+  background: #354b2e;
+  color: #e4efca;
+}
+
+html[data-theme='dark'] .save-button:hover {
+  background: #435d3a;
+}
+
+html[data-theme='dark'] .live-badge {
+  color: #b2d3a5;
+}
+
+html[data-theme='dark'] :is(.nav-account, .empty-scenarios) {
+  border-color: #60715a;
+}
+
+html[data-theme='dark'] .hero-art svg {
+  filter: brightness(.82) saturate(.85);
+}
+
+@media (max-width: 1050px) {
+  .header nav {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 750px) {
+  .header {
+    height: auto;
+    min-height: 94px;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .header nav {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .appearance-select label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

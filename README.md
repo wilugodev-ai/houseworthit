@@ -17,6 +17,14 @@ pnpm dev
 - Account: http://127.0.0.1:3400/account
 - API health: http://127.0.0.1:4400/v1/health
 
+## Appearance and market context
+
+Use **Appearance** in the calculator or account header to choose Light, Dark, or System. System follows the operating system. The browser saves this project-specific preference, applies it before page hydration, and synchronizes it across tabs. If browser storage is blocked, the selection still works for the current page session. It is separate from account data and other projects' appearance settings.
+
+The calculator displays the latest published U.S. 30-year fixed mortgage interest-rate average (Freddie Mac PMMS, FRED `MORTGAGE30US`) and 10-year constant-maturity U.S. Treasury yield (Federal Reserve H.15, FRED `DGS10`). The mortgage figure is **not APR**; APR includes certain fees. Each observation includes its date, frequency, and source link. The Treasury figure is a yield, not a bond price. Data is not real time, and these series have different publication schedules.
+
+The server-only `/api/market` endpoint fetches allowlisted public FRED series pages, validates the labeled latest observations, and caches upstream responses for up to one hour. It sends no user profile or documents to FRED. A source markup change or outage displays an unavailable state rather than invented rates. Mortgage observations older than 10 days and Treasury observations older than 5 days are marked older publications. Older mortgage data cannot be applied with the shortcut. **Use this rate in calculator** explicitly applies the published mortgage benchmark and sets the term to 30 years; it never substitutes the Treasury yield. Existing assumptions do not change until the visitor chooses that action.
+
 Ports differ from Everyday Support Services. Both processes default to loopback only. Root `pnpm dev` first builds the shared calculation package; after editing that package, restart the command or rebuild it. `pnpm build` builds all packages. Production process commands are `pnpm --filter @houseworthit/api start` and `pnpm --filter @houseworthit/web start`.
 
 ## What works

@@ -1,0 +1,136 @@
+.market-snapshot {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding: 25px 28px 18px;
+  background: #fffefa;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.market-intro h3 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 6px 0 9px;
+}
+
+.market-intro p {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.market-series {
+  padding-left: 24px;
+  border-left: 1px solid var(--line);
+}
+
+.market-series h4 {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 5px;
+}
+
+.market-series > strong {
+  display: block;
+  font-family: Manrope, Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+
+.market-date, .market-series small, .market-series a {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.market-series a {
+  color: var(--green);
+  margin-top: 7px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.market-series small {
+  font-size: 9px;
+  margin-top: 4px;
+}
+
+.market-use-rate {
+  background: #edf0df;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 10px;
+  margin-top: 11px;
+  padding: 7px 10px;
+}
+
+.market-use-rate:hover {
+  background: #e2e8cb;
+}
+
+.market-explainer {
+  grid-column: 1 / -1;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.market-explainer p {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0 0 6px;
+  line-height: 1.8;
+}
+
+.market-explainer a {
+  text-decoration: underline;
+}
+
+.market-status {
+  color: var(--ink);
+  font-size: 11px;
+}
+
+html[data-theme='dark'] .market-snapshot {
+  background: #1d2922;
+}
+
+html[data-theme='dark'] .market-use-rate {
+  background: #354b2e;
+  color: #e4efca;
+}
+
+html[data-theme='dark'] .market-use-rate:hover {
+  background: #435d3a;
+}
+
+@media (max-width: 750px) {
+  .market-snapshot {
+    grid-template-columns: 1fr 1fr;
+    padding: 22px;
+    gap: 20px;
+  }
+
+  .market-intro {
+    grid-column: 1 / -1;
+  }
+
+  .market-series {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .market-snapshot {
+    grid-template-columns: 1fr;
+  }
+
+  .market-series + .market-series {
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+}
