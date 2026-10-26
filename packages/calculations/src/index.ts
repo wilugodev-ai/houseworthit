@@ -48,3 +48,34 @@ export function buyingPower(input: Scenario, annualIncome: number, monthlyDebts:
   for (let i = 0; i < 60; i++) { const mid = (low + high) / 2; if (fits(mid)) low = mid; else high = mid; }
   return { price: Math.floor(low), housingBudget, capped: fits(10000000) };
 }
+
+export type HouseholdFinances = {
+  annualIncome: number;
+  monthlyDebts: number;
+  purchaseSavings: number;
+  monthlyTakeHome?: number | null;
+  monthlyLivingExpenses?: number | null;
+};
+
+export function financialSnapshot(input: Scenario, finances: HouseholdFinances) {
+  const { annualIncome, monthlyDebts, purchaseSavings, monthlyTakeHome = null, monthlyLivingExpenses = null } = finances;
+  for (const value of [annualIncome, monthlyDebts, purchaseSavings]) {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) throw new Error('Finances must be nonnegative finite numbers.');
+  }
+  for (const value of [monthlyTakeHome, monthlyLivingExpenses]) {
+    if (value !== null && (typeof value !== 'number' || !Number.isFinite(value) || value < 0)) throw new Error('Monthly budget amounts must be nonnegative finite numbers or omitted.');
+  }
+  const costs = estimate(input);
+  const grossMonthly = annualIncome / 12;
+  const housingPayment = costs.mortgage + costs.tax + costs.insurance + costs.hoa + costs.pmi;
+
+  return {
+    estimatedLtv: costs.principal / input.price * 100,
+    housingRatio: grossMonthly > 0 ? housingPayment / grossMonthly * 100 : null,
+    debtToIncome: grossMonthly > 0 ? (housingPayment + monthlyDebts) / grossMonthly * 100 : null,
+    cashAfterClosing: purchaseSavings - costs.cashToClose,
+    monthlyBreathingRoom: monthlyTakeHome !== null && monthlyLivingExpenses !== null
+      ? monthlyTakeHome - costs.monthly - monthlyDebts - monthlyLivingExpenses
+      : null,
+  };
+}

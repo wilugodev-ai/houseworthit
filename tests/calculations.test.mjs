@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buyingPower, defaults, estimate, validateScenario } from '../packages/calculations/dist/index.js';
+import { buyingPower, defaults, estimate, financialSnapshot, validateScenario } from '../packages/calculations/dist/index.js';
 test('amortization matches a known 30-year mortgage', () => {
   const result = estimate({ ...defaults, price: 375000, downPercent: 20, rate: 6 });
   assert.ok(Math.abs(result.mortgage - 1798.6516) < 0.01);
@@ -33,4 +33,53 @@ test('income-based price obeys housing, debt, and available cash limits', () => 
   assert.ok(buyingPower(defaults, 110000, 400, 20000).price < power.price);
   assert.equal(buyingPower(defaults, 0, 0, 100000).price, 0);
   assert.equal(buyingPower(defaults, 100000, 0, 0).price, 0);
+});
+
+const snapshotHome = { ...defaults, price: 120000, downPercent: 20, rate: 0, years: 10, taxPercent: 1, insurance: 100, hoa: 50, maintenancePercent: 1, closingPercent: 3 };
+const snapshotFinances = { annualIncome: 60000, monthlyDebts: 200, purchaseSavings: 30000, monthlyTakeHome: 4000, monthlyLivingExpenses: 1200 };
+
+test('financial snapshot separates gross-income ratios from the take-home budget', () => {
+  const result = financialSnapshot(snapshotHome, snapshotFinances);
+  assert.equal(result.estimatedLtv, 80);
+  assert.equal(result.housingRatio, 21);
+  assert.equal(result.debtToIncome, 25);
+  assert.equal(result.cashAfterClosing, 2400);
+  assert.equal(result.monthlyBreathingRoom, 1450);
+});
+
+test('financial snapshot preserves cash and monthly shortfalls', () => {
+  const result = financialSnapshot(snapshotHome, { ...snapshotFinances, purchaseSavings: 20000, monthlyTakeHome: 1000, monthlyLivingExpenses: 100 });
+  assert.equal(result.cashAfterClosing, -7600);
+  assert.equal(result.monthlyBreathingRoom, -450);
+});
+
+test('closing cost allowance changes cash needed without changing the monthly home budget', () => {
+  const home = { ...snapshotHome, closingPercent: 5 };
+  const costs = estimate(home);
+  assert.equal(costs.downPayment, 24000);
+  assert.equal(costs.closingCosts, 6000);
+  assert.equal(costs.cashToClose, 30000);
+  const result = financialSnapshot(home, snapshotFinances);
+  assert.equal(result.cashAfterClosing, 0);
+  assert.equal(result.monthlyBreathingRoom, 1450);
+});
+
+test('missing budget figures do not invent disposable income, while zero is a valid entry', () => {
+  assert.equal(financialSnapshot(snapshotHome, { ...snapshotFinances, monthlyTakeHome: null }).monthlyBreathingRoom, null);
+  assert.equal(financialSnapshot(snapshotHome, { ...snapshotFinances, monthlyLivingExpenses: undefined }).monthlyBreathingRoom, null);
+  assert.equal(financialSnapshot(snapshotHome, { ...snapshotFinances, monthlyTakeHome: 0, monthlyLivingExpenses: 0 }).monthlyBreathingRoom, -1350);
+});
+
+test('zero income and all-cash purchases have meaningful snapshot values', () => {
+  const result = financialSnapshot({ ...snapshotHome, downPercent: 100 }, { ...snapshotFinances, annualIncome: 0 });
+  assert.equal(result.estimatedLtv, 0);
+  assert.equal(result.housingRatio, null);
+  assert.equal(result.debtToIncome, null);
+  assert.equal(financialSnapshot({ ...snapshotHome, downPercent: 0 }, snapshotFinances).estimatedLtv, 100);
+});
+
+test('financial snapshot rejects invalid household and optional budget amounts', () => {
+  for (const key of ['annualIncome', 'monthlyDebts', 'purchaseSavings', 'monthlyTakeHome', 'monthlyLivingExpenses']) {
+    for (const value of [-1, NaN, Infinity, '4000']) assert.throws(() => financialSnapshot(snapshotHome, { ...snapshotFinances, [key]: value }));
+  }
 });
