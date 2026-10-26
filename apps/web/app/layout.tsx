@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import './appearance.css';
 import './market.css';
+import './navigation.css';
 import { AppearanceController } from './appearance';
 export const metadata: Metadata = {
   title: 'HouseWorthIt — Find your happy price',

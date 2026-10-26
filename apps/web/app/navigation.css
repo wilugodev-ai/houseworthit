@@ -1,0 +1,35 @@
+html {
+  scroll-padding-top: calc(var(--site-header-height, 102px) + 20px);
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  box-shadow: 0 2px 10px #13231a08;
+}
+
+@media (max-width: 750px) {
+  html {
+    scroll-padding-top: calc(var(--site-header-height, 160px) + 16px);
+  }
+
+  .header {
+    gap: 6px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .header nav {
+    width: 100%;
+    gap: 8px 16px;
+  }
+
+  .header nav > a:not(.nav-account) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    font-size: 11px;
+  }
+}

@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { AppearanceSelect } from './appearance';
 import MarketSnapshot from './market-snapshot';
+import StickyHeader from './sticky-header';
 import { useEffect, useState } from 'react';
 import { bounds, buyingPower, defaults, estimate, type Scenario, validateScenario } from '@houseworthit/calculations';
 
@@ -44,7 +45,7 @@ export default function Home() {
   const rows = [{ label: 'Principal & interest', amount: r.mortgage, color: 'var(--chart-principal, #284a40)' }, { label: 'Property taxes', amount: r.tax, color: '#93a980' }, { label: 'Home insurance', amount: r.insurance, color: '#d1bd8e' }, { label: 'Maintenance reserve', amount: r.maintenance, color: '#df9479' }, { label: 'HOA & mortgage insurance', amount: r.hoa + r.pmi, color: '#b6bbbe' }];
   return <>
     <a className="skip" href="#calculator">Skip to calculator</a>
-    <header className="header wrap"><Link href="/" className="brand"><span className="brand-icon">⌂</span>houseworthit<span className="brand-dot">.</span></Link><nav aria-label="Main navigation"><a href="#calculator">Calculator</a><a href="#how-it-works">How it works</a><Link href="/account" className="nav-account">My home plan <span>↗</span></Link><AppearanceSelect/></nav></header>
+    <StickyHeader><header className="header wrap"><Link href="/" className="brand"><span className="brand-icon">⌂</span>houseworthit<span className="brand-dot">.</span></Link><nav aria-label="Main navigation"><a href="#calculator">Calculator</a><a href="#how-it-works">How it works</a><Link href="/account" className="nav-account">My home plan <span>↗</span></Link><AppearanceSelect/></nav></header></StickyHeader>
     <main>
       <section className="hero wrap"><div className="hero-copy"><span className="eyebrow"><span className="tiny-dot"/> A little clarity. A big next step.</span><h1>A home you love.<br/>A price that <em>fits.</em></h1><p>Big dreams deserve a clear plan. Discover what homeownership could look like for your income, your savings, and your life.</p><a className="button" href="#calculator">Find my happy price <span>↗</span></a><div className="hero-note"><span>✓ No sign-up to explore</span><span>✓ Your numbers, your pace</span></div></div><div className="hero-art"><HouseArt/><div className="art-label"><span className="label-icon">⌂</span><div>A place for your next chapter<small>Let’s make the numbers feel like home.</small></div></div><span className="art-caption">MORE POSSIBILITY. LESS GUESSWORK.</span></div></section>
       <section id="calculator" className="calculator-section"><div className="wrap"><div className="section-heading"><div><span className="eyebrow">THE HOMEOWNERSHIP CALCULATOR</span><h2>Meet your numbers.</h2></div><p>A clearer picture, one adjustment at a time.<br/>All starting figures are illustrative.</p></div>

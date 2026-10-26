@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { AppearanceSelect } from '../appearance';
+import StickyHeader from '../sticky-header';
 import { useEffect, useState, type FormEvent } from 'react';
 import { buyingPower, defaults, estimate } from '@houseworthit/calculations';
 
@@ -52,7 +53,7 @@ export default function Account() {
   const result = estimate({ ...defaults, price: validPrice });
   const power = buyingPower(defaults, profile.annualIncome, profile.monthlyDebts, profile.savings);
   const dti = profile.annualIncome > 0 ? ((result.monthly - result.maintenance + profile.monthlyDebts) / (profile.annualIncome / 12) * 100).toFixed(1) : null;
-  return <><header className="header wrap"><Link href="/" className="brand"><span className="brand-icon">⌂</span>houseworthit<span className="brand-dot">.</span></Link><nav aria-label="Account navigation"><Link href="/" className="nav-account">← Back to calculator</Link><AppearanceSelect/></nav></header><main className="wrap account-main">
+  return <><StickyHeader><header className="header wrap"><Link href="/" className="brand"><span className="brand-icon">⌂</span>houseworthit<span className="brand-dot">.</span></Link><nav aria-label="Account navigation"><Link href="/" className="nav-account">← Back to calculator</Link><AppearanceSelect/></nav></header></StickyHeader><main className="wrap account-main">
     {message && <p className="message" role="status">{message}</p>}
     {loading ? <p role="status">Opening your home plan…</p> : !user ? <section className="auth-card"><span className="eyebrow">YOUR NEXT CHAPTER STARTS HERE</span><h1>{register ? 'Make room for a plan.' : 'Welcome home.'}</h1><p>{register ? 'Save your financial profile and keep supporting documents together in your own account.' : 'Sign in to pick up where you left off.'}</p><form onSubmit={authenticate}>{register && <label>Your name<input className="plain-input" name="name" autoComplete="name" required maxLength={100}/></label>}<label>Email address<input className="plain-input" type="email" name="email" autoComplete="email" required maxLength={254}/></label><label>Password<input className="plain-input" type="password" name="password" autoComplete={register ? 'new-password' : 'current-password'} minLength={register ? 12 : undefined} maxLength={128} required/>{register && <small>At least 12 characters.</small>}</label>{register && <label className="check-consent"><input name="consent" type="checkbox" required/><span>I understand my profile and uploaded files are stored for my use. Documents are not verified, shared with lenders, or used to approve a loan. I can delete my account and its documents.</span></label>}<button className="button" disabled={busy}>{busy ? 'Please wait…' : register ? 'Create my account ↗' : 'Sign in ↗'}</button></form><button className="auth-toggle" onClick={() => { setRegister(!register); setMessage(''); }}>{register ? 'Already have an account? Sign in' : 'New here? Create your home plan'}</button><p>No credit check. No Social Security number requested.</p></section> : <>
       <div className="account-heading"><div><span className="eyebrow">YOUR PERSONAL HOME PLAN</span><h1>Hello, {user.name.split(' ')[0]}.</h1><p>Small steps today. A clearer path to home.</p></div><button className="button" disabled={busy} onClick={logout}>Sign out ↗</button></div>
