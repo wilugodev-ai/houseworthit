@@ -52,4 +52,4 @@ The operator-only `provision-neon.mjs` creates the isolated role/database and se
 
 ## Hostinger domain
 
-`houseworthit.com` is still registered and managed at Hostinger. Its current website DNS has not been changed. The registrar does not need to move to Google. See [domain setup](domain-hostinger.md) for the outstanding ownership verification and cutover steps.
+`houseworthit.com` remains registered and managed at Hostinger. Ownership verification and Cloud Run mappings are complete; the domain owner updated the website DNS. Trusted HTTPS on `www.houseworthit.com` returned HTTP 200. The apex certificate remains pending at the latest check. See [domain setup](domain-hostinger.md) for the exact records and status.

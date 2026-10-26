@@ -2,7 +2,9 @@
 
 A home-buying readiness website, rebuilt around household income, debt, savings, and the full cost of ownership. Includes a responsive calculator, local scenario comparison, personal accounts, saved financial profiles, and private document uploads.
 
-Live Google website: **https://houseworthit-3ps6xhuf7a-uc.a.run.app**. Hosting uses Cloud Run with Neon PostgreSQL and private encrypted Google Cloud Storage. The Hostinger domain is verified and mapped; DNS connection and HTTPS certificate provisioning remain pending. See [deployment details](docs/deployment-google-cloud.md) and [Hostinger domain setup](docs/domain-hostinger.md).
+Live website: **https://www.houseworthit.com**. Google fallback: **https://houseworthit-3ps6xhuf7a-uc.a.run.app**. Hosting uses Cloud Run with Neon PostgreSQL and private encrypted Google Cloud Storage. The Hostinger domain is verified and mapped; the `www` HTTPS certificate is ready, while the apex certificate remains pending at the latest check. See [deployment details](docs/deployment-google-cloud.md) and [Hostinger domain setup](docs/domain-hostinger.md).
+
+The browser icon uses the project's green house mark: SVG for modern browsers, a multi-size 16/32/48px ICO fallback, and a 180px Apple touch icon. Regenerate the raster formats after changing `apps/web/app/icon.svg` with `node scripts/generate-icons.mjs`.
 
 ## Stack
 

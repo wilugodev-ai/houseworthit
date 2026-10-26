@@ -2,7 +2,7 @@
 
 The Google website is already live at https://houseworthit-3ps6xhuf7a-uc.a.run.app.
 
-Google ownership was verified on October 26, 2026. Both `houseworthit.com` and `www.houseworthit.com` now map to the `houseworthit` Cloud Run service. Google returned the DNS records below. Certificates are pending DNS configuration. Hostinger edits are being performed by the domain owner.
+Google ownership was verified on October 26, 2026. Both `houseworthit.com` and `www.houseworthit.com` now map to the `houseworthit` Cloud Run service. The domain owner completed the Hostinger website record changes. Google reports `www` Ready=True and CertificateProvisioned=True, and trusted HTTPS returned HTTP 200. The apex certificate remains pending at the latest check.
 
 ## Google-issued DNS records
 
