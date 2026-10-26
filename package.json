@@ -1,0 +1,11 @@
+{
+  "name": "houseworthit", "version": "0.1.0", "private": true,
+  "packageManager": "pnpm@12.5.1", "engines": { "node": ">=24.19.0 <25" },
+  "scripts": {
+    "dev": "pnpm --filter @houseworthit/calculations build && pnpm --parallel --filter @houseworthit/web --filter @houseworthit/api dev",
+    "build": "pnpm --filter @houseworthit/calculations build && pnpm --filter @houseworthit/api build && pnpm --filter @houseworthit/web build",
+    "typecheck": "pnpm --filter @houseworthit/calculations build && pnpm -r typecheck",
+    "test": "pnpm --filter @houseworthit/calculations build && pnpm --filter @houseworthit/api build && node --test tests/*.test.mjs",
+    "check": "pnpm typecheck && pnpm test && pnpm build"
+  }
+}
