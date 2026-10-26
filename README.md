@@ -2,6 +2,8 @@
 
 A home-buying readiness website, rebuilt around household income, debt, savings, and the full cost of ownership. Includes a responsive calculator, local scenario comparison, personal accounts, saved financial profiles, and private document uploads.
 
+Live Google website: **https://houseworthit-3ps6xhuf7a-uc.a.run.app**. Hosting uses Cloud Run with Neon PostgreSQL and private encrypted Google Cloud Storage. The Hostinger custom domain is pending ownership verification and DNS connection. See [deployment details](docs/deployment-google-cloud.md) and [Hostinger domain setup](docs/domain-hostinger.md).
+
 ## Stack
 
 Matches the foundation in `C:\everydaysupportservices`: Node 24.19, pnpm 12.5.1 workspace, TypeScript 5.9.3, Next.js 16.3.5 App Router, React 19.3, plain CSS, and NestJS 12.0.4. Node's built-in SQLite provides local persistence. No source, accounts, credentials, or private records were copied from the reference project.
@@ -53,7 +55,7 @@ File contents are checked for supported signatures, MIME, and extensions, encryp
 
 ## Before production hosting
 
-This delivery pushes source to GitHub; it does not replace the live domain or deploy services. Configure HTTPS, a durable private data volume, access-controlled backups and key management, operational monitoring, per-client rate limiting, a reviewed privacy/retention policy, and a malware-scanning workflow before accepting real financial documents. The current SQLite deployment requires one API instance with persistent storage; do not place it on ephemeral storage or scale it across independent replicas. Authentication has no email verification, MFA, or email password recovery yet. These are follow-up production capabilities, not simulated UI actions.
+The Google deployment uses HTTPS, durable Neon storage, private Cloud Storage, a Secret Manager encryption key, and persistent authentication throttling. The local SQLite mode still requires a durable private volume if hosted elsewhere; Cloud Run refuses that mode. Review operational monitoring, backups and retention, a business privacy policy, and malware scanning before accepting customer financial documents. Authentication has no email verification, MFA, or email password recovery yet. These are follow-up production capabilities, not simulated UI actions.
 
 `apps/web` uses server-only `API_URL` (default `http://127.0.0.1:4400`) to proxy `/api/*`. Never expose the API directly in production; bind to private networking and terminate public traffic at the web/reverse proxy. Set `NODE_ENV=production` on both services; serve the web through HTTPS. Set `PORT` and `HOST` for API binding as needed. The bundled Next start script uses local port 3400; use a managed reverse proxy or adjust deployment configuration for the target host.
 

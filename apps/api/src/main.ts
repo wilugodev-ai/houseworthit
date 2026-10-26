@@ -3,10 +3,11 @@ import { BadRequestException, Body, Controller, Get, Module, Post } from '@nestj
 import { NestFactory } from '@nestjs/core';
 import { estimate, validateScenario } from '@houseworthit/calculations';
 import { AccountsController } from './accounts';
+import { store } from './storage';
 
 @Controller('v1')
 class AppController {
-  @Get('health') health() { return { status: 'ok', service: 'houseworthit' }; }
+  @Get('health') health() { return { status: 'ok', service: 'houseworthit', storage: store.kind }; }
   @Post('estimate') calculate(@Body() input: unknown) {
     try { return estimate(validateScenario(input)); }
     catch (error) { throw new BadRequestException(error instanceof Error ? error.message : 'Invalid scenario'); }
@@ -15,6 +16,7 @@ class AppController {
 @Module({ controllers: [AppController, AccountsController] })
 class AppModule {}
 async function bootstrap() {
+  await store.initialize();
   const app = await NestFactory.create(AppModule);
   app.use((_req: unknown, res: { setHeader(name: string, value: string): void }, next: () => void) => { res.setHeader('Cache-Control', 'no-store'); res.setHeader('X-Content-Type-Options', 'nosniff'); next(); });
   app.enableShutdownHooks();
