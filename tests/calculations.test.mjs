@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buyingPower, defaults, estimate, financialSnapshot, validateScenario } from '../packages/calculations/dist/index.js';
+import { buyingPower, defaults, estimate, financialSnapshot, scenarioCsv, validateScenario } from '../packages/calculations/dist/index.js';
 test('amortization matches a known 30-year mortgage', () => {
   const result = estimate({ ...defaults, price: 375000, downPercent: 20, rate: 6 });
   assert.ok(Math.abs(result.mortgage - 1798.6516) < 0.01);
@@ -82,4 +82,31 @@ test('financial snapshot rejects invalid household and optional budget amounts',
   for (const key of ['annualIncome', 'monthlyDebts', 'purchaseSavings', 'monthlyTakeHome', 'monthlyLivingExpenses']) {
     for (const value of [-1, NaN, Infinity, '4000']) assert.throws(() => financialSnapshot(snapshotHome, { ...snapshotFinances, [key]: value }));
   }
+});
+
+test('CSV export includes Excel encoding, quoted fields, numeric results and assumptions', () => {
+  const csv = scenarioCsv(snapshotHome, snapshotFinances);
+  assert.ok(csv.startsWith('\uFEFF"Section","Metric","Value","Unit","Notes"\r\n'));
+  assert.ok(csv.endsWith('\r\n'));
+  assert.ok(csv.includes('"Home price","120000.00","USD"'));
+  assert.ok(csv.includes('"Loan term","10","years"'));
+  assert.ok(csv.includes('"Estimated closing costs","3600.00","USD"'));
+  assert.ok(csv.includes('"Estimated LTV","80.00","%"'));
+  assert.ok(csv.includes('"Monthly breathing room","1450.00","USD/month"'));
+  assert.ok(csv.includes('"Estimate limitations","Planning estimate, not a lender quote or credit decision.","",""\r\n'));
+});
+
+test('CSV export distinguishes missing budget amounts from zero', () => {
+  const missing = scenarioCsv(snapshotHome, { ...snapshotFinances, monthlyTakeHome: null });
+  assert.ok(missing.includes('"Monthly take-home pay","","USD/month","Not entered."'));
+  assert.ok(missing.includes('"Monthly breathing room","","USD/month","Enter take-home pay and living expenses to calculate."'));
+  const zero = scenarioCsv(snapshotHome, { ...snapshotFinances, monthlyTakeHome: 0, monthlyLivingExpenses: 0 });
+  assert.ok(zero.includes('"Monthly take-home pay","0.00","USD/month"'));
+  assert.ok(zero.includes('"Monthly breathing room","-1350.00","USD/month"'));
+});
+
+test('CSV export preserves shortfalls as signed numeric values', () => {
+  const csv = scenarioCsv(snapshotHome, { ...snapshotFinances, purchaseSavings: 20000, monthlyTakeHome: 1000, monthlyLivingExpenses: 100 });
+  assert.ok(csv.includes('"Cash after closing","-7600.00","USD"'));
+  assert.ok(csv.includes('"Monthly breathing room","-450.00","USD/month"'));
 });

@@ -38,6 +38,7 @@ Ports differ from Everyday Support Services. Both processes default to loopback 
 - Household income, monthly debt, purchase savings, DTI, estimated savings gap, and a maximum planning price constrained by 28% housing / 36% total-debt benchmarks and available cash (within a $10,000–$10 million search range).
 - Estimated LTV, housing-to-income ratio, purchase savings remaining after estimated closing, and monthly breathing room using optional take-home pay and living-expense inputs. Negative results show cash or monthly shortfalls.
 - Up to three calculator scenarios saved to the current browser (separate from accounts).
+- **Export CSV** downloads the current home assumptions, household finance inputs, monthly costs, closing cost breakdown, financial indicators and income-based budget as `houseworthit-home-plan.csv`. The file uses UTF-8 with a BOM and quoted comma-separated columns for Excel compatibility. Amounts use unformatted numeric values with a separate unit column; missing optional budget values stay blank with explanatory notes. The download is generated in the browser without sending these inputs to a server.
 - Registration, login, logout, persisted financial profiles, and permanent self-service account deletion.
 - Private PDF/JPEG/PNG upload, list, authenticated download, and deletion; maximum 10 MB/file and 20 files/user.
 - Shared input-validated calculation engine exposed as `POST /v1/estimate`.

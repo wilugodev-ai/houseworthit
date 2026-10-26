@@ -79,3 +79,52 @@ export function financialSnapshot(input: Scenario, finances: HouseholdFinances) 
       : null,
   };
 }
+
+export function scenarioCsv(input: Scenario, finances: HouseholdFinances) {
+  const s = validateScenario(input);
+  const snapshot = financialSnapshot(s, finances);
+  const costs = estimate(s);
+  const power = buyingPower(s, finances.annualIncome, finances.monthlyDebts, finances.purchaseSavings);
+  const rows: string[][] = [['Section', 'Metric', 'Value', 'Unit', 'Notes']];
+  const add = (section: string, metric: string, value: number | string | null | undefined, unit = '', notes = '') => {
+    rows.push([section, metric, typeof value === 'number' ? value.toFixed(unit === 'years' ? 0 : 2) : value ?? '', unit, notes]);
+  };
+  add('Home assumptions', 'Home price', s.price, 'USD');
+  add('Home assumptions', 'Down payment', s.downPercent, '%');
+  add('Home assumptions', 'Mortgage interest rate', s.rate, '%/year', 'Interest rate, not APR.');
+  add('Home assumptions', 'Loan term', s.years, 'years');
+  add('Home assumptions', 'Property tax rate', s.taxPercent, '%/year');
+  add('Home assumptions', 'Home insurance', s.insurance, 'USD/month');
+  add('Home assumptions', 'HOA', s.hoa, 'USD/month');
+  add('Home assumptions', 'Maintenance reserve rate', s.maintenancePercent, '%/year');
+  add('Home assumptions', 'PMI rate', s.pmiPercent, '%/year', 'Applied to loan principal only below 20% down.');
+  add('Home assumptions', 'Closing cost allowance', s.closingPercent, '%', 'Percentage of home price.');
+  add('Household finances', 'Annual gross income', finances.annualIncome, 'USD/year');
+  add('Household finances', 'Other debt payments', finances.monthlyDebts, 'USD/month');
+  add('Household finances', 'Purchase savings', finances.purchaseSavings, 'USD');
+  add('Household finances', 'Monthly take-home pay', finances.monthlyTakeHome, 'USD/month', finances.monthlyTakeHome == null ? 'Not entered.' : 'After taxes and payroll deductions.');
+  add('Household finances', 'Other living expenses', finances.monthlyLivingExpenses, 'USD/month', finances.monthlyLivingExpenses == null ? 'Not entered.' : 'Excludes current rent and home costs and debts counted elsewhere.');
+  add('Monthly cost', 'Principal and interest', costs.mortgage, 'USD/month');
+  add('Monthly cost', 'Property taxes', costs.tax, 'USD/month');
+  add('Monthly cost', 'Home insurance', costs.insurance, 'USD/month');
+  add('Monthly cost', 'HOA', costs.hoa, 'USD/month');
+  add('Monthly cost', 'Estimated PMI', costs.pmi, 'USD/month');
+  add('Monthly cost', 'Maintenance reserve', costs.maintenance, 'USD/month');
+  add('Monthly cost', 'Total home cost', costs.monthly, 'USD/month', 'Includes maintenance.');
+  add('Cash to close', 'Loan amount', costs.principal, 'USD');
+  add('Cash to close', 'Down payment amount', costs.downPayment, 'USD');
+  add('Cash to close', 'Estimated closing costs', costs.closingCosts, 'USD');
+  add('Cash to close', 'Estimated cash to close', costs.cashToClose, 'USD', 'Excludes prepaid adjustments and credits and deposits.');
+  add('Financial indicators', 'Estimated LTV', snapshot.estimatedLtv, '%', 'Loan divided by home price; appraisal and lender rules may differ.');
+  add('Financial indicators', 'Housing ratio', snapshot.housingRatio, '%', snapshot.housingRatio === null ? 'Gross income is required.' : 'Excludes maintenance and other debts; uses gross monthly income.');
+  add('Financial indicators', 'Debt-to-income ratio', snapshot.debtToIncome, '%', snapshot.debtToIncome === null ? 'Gross income is required.' : 'Includes housing and other debts; excludes maintenance.');
+  add('Financial indicators', 'Cash after closing', snapshot.cashAfterClosing, 'USD', 'Negative values indicate a purchase savings shortfall.');
+  add('Financial indicators', 'Monthly breathing room', snapshot.monthlyBreathingRoom, 'USD/month', snapshot.monthlyBreathingRoom === null ? 'Enter take-home pay and living expenses to calculate.' : 'Negative values indicate a monthly budget shortfall.');
+  add('Income-based budget', 'Estimated home price limit', power.price, 'USD', !power.price ? 'No price in the modeled range fits these assumptions.' : power.capped ? 'At least this amount; search limit reached.' : 'Uses the 28% housing and 36% total debt planning benchmarks and purchase savings.');
+  add('Income-based budget', 'Housing payment limit', power.housingBudget, 'USD/month');
+  add('Loan totals', 'Estimated total mortgage interest', costs.totalInterest, 'USD', 'Over the full scheduled loan term.');
+  add('Notes', 'Estimate limitations', 'Planning estimate, not a lender quote or credit decision.');
+  add('Notes', 'Input scope', 'Current calculator inputs; starting figures may be examples.');
+
+  return '\uFEFF' + rows.map(row => row.map(value => `"${value.replaceAll('"', '""')}"`).join(',')).join('\r\n') + '\r\n';
+}
